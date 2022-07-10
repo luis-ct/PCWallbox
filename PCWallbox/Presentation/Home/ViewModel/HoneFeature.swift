@@ -9,9 +9,10 @@ import Foundation
 import Combine
 
 protocol HomeViewModelProtocol {
-    var characters: CurrentValueSubject<StateViewModel<[CharacterItem]>, Never> { get }
+    var text: CurrentValueSubject<String, Never> { get set }
+    var translated: CurrentValueSubject<String, Never> { get set }
+
     func viewDidLoad()
-    func selectCharacter(at index: Int)
 }
 
 protocol HomeNavigatorProtocol {}

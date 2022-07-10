@@ -10,20 +10,30 @@ import SwiftUI
 import Combine
 
 class HomeViewController: UIViewController {
-    var viewModel: HomeViewModelProtocol!
+    var viewModel: HomeViewModel!
 
     private var cancellables: Set<AnyCancellable> = Set()
     private var items: [CharacterItem] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let observer = viewModel.characters.sink { [weak self] value in
-            self?.charactersReceived(value)
-        }
-        cancellables.insert(observer)
 
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationItem.title = "Marvel"
+        self.navigationItem.title = "Dictionary"
+
+        let homeView = HomeView(viewModel: viewModel.item)
+        let hosting = UIHostingController(rootView: homeView)
+        hosting.view.translatesAutoresizingMaskIntoConstraints = false
+        addChild(hosting)
+
+        view.addSubview(hosting.view)
+
+        hosting.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        hosting.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        hosting.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        hosting.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+        hosting.didMove(toParent: self)
 
         viewModel.viewDidLoad()
     }

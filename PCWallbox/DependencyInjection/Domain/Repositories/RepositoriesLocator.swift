@@ -8,7 +8,7 @@
 import Foundation
 
 struct RepositoriesLocator {
-    func makeCharactersRepository() -> CharacterRepository {
-        return CharacterRepository(api: ApiClientFake())
+    func makeCharactersRepository() -> TranslatorRepository {
+        return TranslatorRepository(api: ApiClientFake(), local: TranslatorLocal())
     }
 }
