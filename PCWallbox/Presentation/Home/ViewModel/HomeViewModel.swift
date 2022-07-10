@@ -8,42 +8,79 @@
 import Foundation
 import Combine
 
-class HomeViewModel: HomeViewModelProtocol {
+class HomeItem: ObservableObject {
+    @Published var text: String = ""
+    @Published var state: StateViewModel<String> = .initial
+
+    var tap: () -> () = {}
+}
+
+class HomeViewModel {
+    let item = HomeItem()
+
     var navigator: HomeNavigatorProtocol!
 
-    let characters: CurrentValueSubject<StateViewModel<[CharacterItem]>, Never> = CurrentValueSubject(.initial)
-    var charactersDO: [CharacterDO] = []
-
-    private let useCase: ListUseCase
-
+    private let useCase: UseCase<TranslateUseCaseInput, TranslateUseCaseOutput>
+    private let lastTranslationUseCase: UseCase<Void, TranslateUseCaseOutput>
     init(
-        useCase: ListUseCase
+        useCase: UseCase<TranslateUseCaseInput, TranslateUseCaseOutput>,
+        lastTranslationUseCase: UseCase<Void, TranslateUseCaseOutput>
     ) {
         self.useCase = useCase
+        self.lastTranslationUseCase = lastTranslationUseCase
+        item.tap = { [weak self] in
+            self?.translateTapped()
+        }
     }
 
     func viewDidLoad() {
-        getCharacters()
+        getLastTranslation()
     }
 
-    func selectCharacter(at index: Int) {}
-    
-    private func getCharacters() {
-        characters.send(.loading)
+    private func translateTapped() {
+        translate()
+    }
+
+    // MARK: - Last Translation
+    private func getLastTranslation() {
+        lastTranslationUseCase.output = { [weak self] result in
+            switch result {
+            case .success(let output):
+                self?.getLastTranslationSuccess(output)
+            case .failure(let error):
+                self?.getLastTranslationFailure(error)
+            }
+        }
+        lastTranslationUseCase.run()
+    }
+
+    private func getLastTranslationSuccess(_ output: String) {
+        item.state = .success(output)
+    }
+
+    private func getLastTranslationFailure(_ error: Error) {
+        item.state = .failure(error)
+    }
+
+    // MARK: - Translate
+    private func translate() {
+        item.state = .loading
         useCase.output = { [weak self] result in
             switch result {
             case .success(let output):
-                self?.getCharactersSuccess(output)
+                self?.translateSuccess(output)
             case .failure(let error):
-                self?.characters.send(.failure(error))
+                self?.translateFailure(error)
             }
         }
         useCase.run()
     }
 
-    private func getCharactersSuccess(_ output: [CharacterDO]) {
-        self.charactersDO = output
-        let items = output.compactMap { CharacterItem(name: $0.name, image: $0.image) }
-        characters.send(.success(items))
+    private func translateSuccess(_ output: String) {
+        item.state = .success(output)
+    }
+
+    private func translateFailure(_ error: Error) {
+        item.state = .failure(error)
     }
 }
