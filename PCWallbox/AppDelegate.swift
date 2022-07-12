@@ -14,12 +14,14 @@ import UIKit
         self.window = UIWindow(frame: UIScreen.main.bounds)
 
         let (view, navigator) = HomeBuilder().build()
-        let navigatorViewController = UINavigationController(rootViewController: view)
-
+        let navigatorViewController = UINavigationController(rootViewController: UIViewController())
+        navigator.view = view
         navigator.navigationController = navigatorViewController
 
         window?.rootViewController = navigatorViewController
         window?.makeKeyAndVisible()
+
+        navigator.start()
 
         return true
     }

@@ -1,5 +1,5 @@
 //
-//  TranslateUseCase.swift
+//  TranslatorUseCase.swift
 //  PCWallbox
 //
 //  Created by Luis Cañadas Treceño on 6/3/22.
@@ -15,7 +15,7 @@ protocol TranslateRepositoryProtocol {
     func translate(text: String) -> AnyPublisher<String, Error>
 }
 
-class TranslateUseCase: UseCase<TranslateUseCaseInput, TranslateUseCaseOutput> {
+class TranslatorUseCase: UseCase<TranslateUseCaseInput, TranslateUseCaseOutput> {
     private var repository: TranslateRepositoryProtocol
     private var cancellables: Set<AnyCancellable> = Set()
     private var translatedText: String = ""
