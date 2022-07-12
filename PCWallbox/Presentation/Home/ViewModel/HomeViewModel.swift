@@ -15,19 +15,24 @@ class HomeItem: ObservableObject {
     var tap: () -> () = {}
 }
 
-class HomeViewModel {
-    let item = HomeItem()
+protocol HomeViewModelAbstractFactory {
+    func makeTranslatorUseCase() -> UseCase<TranslateUseCaseInput, TranslateUseCaseOutput>
+    func makeLastTranslationUseCase() -> UseCase<Void, TranslateUseCaseOutput>
+}
 
+class HomeViewModel: HomeViewModelProtocol {
+    var item = HomeItem()
     var navigator: HomeNavigatorProtocol!
 
     private let useCase: UseCase<TranslateUseCaseInput, TranslateUseCaseOutput>
     private let lastTranslationUseCase: UseCase<Void, TranslateUseCaseOutput>
+
     init(
-        useCase: UseCase<TranslateUseCaseInput, TranslateUseCaseOutput>,
-        lastTranslationUseCase: UseCase<Void, TranslateUseCaseOutput>
+        abstractFactory: HomeViewModelAbstractFactory
     ) {
-        self.useCase = useCase
-        self.lastTranslationUseCase = lastTranslationUseCase
+        self.useCase = abstractFactory.makeTranslatorUseCase()
+        self.lastTranslationUseCase = abstractFactory.makeLastTranslationUseCase()
+
         item.tap = { [weak self] in
             self?.translateTapped()
         }

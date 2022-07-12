@@ -9,9 +9,7 @@ import Foundation
 import Combine
 
 protocol HomeViewModelProtocol {
-    var text: CurrentValueSubject<String, Never> { get set }
-    var translated: CurrentValueSubject<String, Never> { get set }
-
+    var item: HomeItem { get set }
     func viewDidLoad()
 }
 

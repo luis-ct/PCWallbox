@@ -9,10 +9,9 @@ import Foundation
 
 struct HomeBuilder {
     func build() -> (HomeViewController, HomeNavigator) {
-        let useCase = UseCasesLocator().makeTranslateUseCase()
-        let lastTranslationUseCase = UseCasesLocator().makeLastTranslationUseCase()
         let view = HomeViewController()
-        let viewModel = HomeViewModel(useCase: useCase, lastTranslationUseCase: lastTranslationUseCase)
+        let abstractFactory = HomeViewModelAbstractFactoryImpl(useCasesLocator: UseCasesLocator())
+        let viewModel = HomeViewModel(abstractFactory: abstractFactory)
         let navigator = HomeNavigator()
 
         view.viewModel = viewModel

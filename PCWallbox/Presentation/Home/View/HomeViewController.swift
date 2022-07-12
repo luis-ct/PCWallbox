@@ -10,10 +10,9 @@ import SwiftUI
 import Combine
 
 class HomeViewController: UIViewController {
-    var viewModel: HomeViewModel!
+    var viewModel: HomeViewModelProtocol!
 
     private var cancellables: Set<AnyCancellable> = Set()
-    private var items: [CharacterItem] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,28 +37,6 @@ class HomeViewController: UIViewController {
         viewModel.viewDidLoad()
     }
 
-    private func charactersReceived(_ state: StateViewModel<[CharacterItem]>) {
-        switch state {
-        case .initial:
-            hideLoading()
-            self.items = []
-        case .loading:
-            showLoading()
-        case .success(let items):
-            hideLoading()
-            self.items = items
-        case .failure(let error):
-            hideLoading()
-            showError(error)
-        }
-    }
-
-    private func showLoading() {
-        let view = UIView(frame: .zero)
-        let activityIndicatorView = addLoading(view: view)
-        activityIndicatorView.startAnimating()
-    }
-
     private func hideLoading() {}
 
     private func showError(_ error: Error) {
@@ -69,5 +46,3 @@ class HomeViewController: UIViewController {
         self.navigationController?.present(alert, animated: true, completion: nil)
     }
 }
-
-extension HomeViewController: LoadingProtocol {}

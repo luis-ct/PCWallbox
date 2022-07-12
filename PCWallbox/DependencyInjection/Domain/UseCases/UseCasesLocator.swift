@@ -10,13 +10,13 @@ import Foundation
 struct UseCasesLocator {
     let repositoriesLocator = RepositoriesLocator()
 
-    func makeTranslateUseCase() -> UseCase<TranslateUseCaseInput, TranslateUseCaseOutput> {
-        let repository = repositoriesLocator.makeCharactersRepository()
-        return TranslateUseCase(input: "", repository: repository)
+    func makeTranslatorUseCase() -> UseCase<TranslateUseCaseInput, TranslateUseCaseOutput> {
+        let repository = repositoriesLocator.makeTranslatorRepository()
+        return TranslatorUseCase(input: "", repository: repository)
     }
 
     func makeLastTranslationUseCase() -> UseCase<Void, TranslateUseCaseOutput> {
-        let repository = repositoriesLocator.makeCharactersRepository()
+        let repository = repositoriesLocator.makeTranslatorRepository()
         return LastTranslationUseCase(repository: repository)
     }
 

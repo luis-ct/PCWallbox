@@ -15,6 +15,4 @@ class HomeNavigator: HomeNavigatorProtocol {
         guard let view = view else { return }
         navigationController?.setViewControllers([view], animated: false)
     }
-
-    func close() {}
 }
